@@ -1,0 +1,10 @@
+SubDir TOP src ;
+
+HDRS += . ;
+
+SOURCE = [ GLOB $(TOP)/src : *.cpp ] ;
+SOURCE = $(SOURCE:D="") ;
+
+TARGETS += $(TARGET) ;
+
+Main $(TARGET) : $(SOURCE) ;

@@ -1,0 +1,13 @@
+SubDir TOP tools ;
+
+LOCATE_TARGET = $(TOP)/obj ;
+
+HDRS += $(TOP)/src ;
+
+T1 = mapper$(SUFFIX) ;
+TARGETS +=  $(T1) ;
+
+SCRIPTS = mr ;
+
+Main $(T1) : mapper.cpp ;
+InstallBin $(TOP)/bin : $(SCRIPTS) ;

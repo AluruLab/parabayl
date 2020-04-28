@@ -1,0 +1,2 @@
+# Uncomment this option to include network backtracking.
+INCLUDE_BACKTRACK=1

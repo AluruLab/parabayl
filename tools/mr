@@ -1,0 +1,55 @@
+#!/usr/bin/perl
+
+# $Id$
+#
+# File: mr
+# Developed: Mar 20, 2010
+#
+# Author: Jaroslaw Zola <jaroslaw.zola@gmail.com>
+
+use strict;
+use warnings;
+
+# !!! SET THIS TO POINT TO THE MAPPER IF YOU DON'T LIKE ENV !!!
+my $MAPPER=$ENV{PARABAYL_MAPPER};
+die "mapper not found, set PARABAYL_MAPPER environment variable\n" if (not defined $MAPPER);
+
+if (@ARGV != 3) {
+    print "usage: mr hostfile ranks_per_node mpich2|openmpi\n";
+    exit;
+}
+
+# get hostfile into memory
+open(INPUT, "< $ARGV[0]") or die "can't open $ARGV[0]\n";
+my @hostfile = <INPUT>;
+close(INPUT);
+
+# create mapping id to hostname
+my $n = 0;
+my %map;
+
+foreach (@hostfile) {
+    chomp($_);
+    $map{$n} = $_;
+    $n++;
+}
+
+# execute mapper
+my @mapper = `$MAPPER $n $ARGV[1] | sort -n`;
+
+# generate hostfiles
+if ($ARGV[2] =~ /mpich2/) {
+    foreach (@mapper) {
+	chomp($_);
+	my ($rank, $node, $slot) = split(' ', $_);
+	print "$map{$node}\n";
+    }
+}
+
+if ($ARGV[2] =~ /openmpi/) {
+    foreach (@mapper) {
+	chomp($_);
+	my ($rank, $node, $slot) = split(' ', $_);
+	print "rank $rank=$map{$node} slot=$slot\n";
+    }
+}
